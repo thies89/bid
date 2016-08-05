@@ -1,0 +1,21 @@
+app:
+    resource: "@AppBundle/Controller/"
+    type:     annotation
+
+info:
+    path: /wir
+    defaults:
+        _controller: FrameworkBundle:Template:template
+        template: static/info.html.twig
+
+glossary:
+    path: /glossar
+    defaults:
+        _controller: FrameworkBundle:Template:template
+        template: static/glossary.html.twig
+
+privacy:
+    path: /datenschutz
+    defaults:
+        _controller: FrameworkBundle:Template:template
+        template: static/privacy.html.twig

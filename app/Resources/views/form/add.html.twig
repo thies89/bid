@@ -1,0 +1,25 @@
+{% extends "layout.html.twig" %}
+
+{% block jumbotron %}
+    <h1>Mitmachen</h1>
+
+    {{ form_start(form, {action: path('add'), attr: {class: 'form'}}) }}
+        {{ form_row(form.address, {'form_type': 'horizontal'}) }}
+        {{ form_row(form.addressInfo, {'form_type': 'horizontal'}) }}
+        {{ form_row(form.category, {'form_type': 'horizontal'}) }}
+        {{ form_row(form.usageType, {'form_type': 'horizontal'}) }}
+        {{ form_row(form.privacy, {'form_type': 'horizontal'}) }}
+
+        <hr>
+
+        <div class="form-optional">
+            <p class="form-optional__title"><strong>Die folgenden Angaben w&auml;ren hilfreich, sind aber optional.</strong> <a href="#submit" class="pull-right">&uuml;berspringen</a></p>
+
+            {{ form_rest(form, {'form_type': 'horizontal'}) }}
+        </div>
+
+        <button id="submit" type="submit" class="btn btn-primary pull-right">Eintragen</button>
+
+
+    {{ form_end(form) }}
+{% endblock %}

@@ -1,0 +1,68 @@
+{% import "macros.html.twig" as macro %}
+<!doctype html>
+<html lang="{{ app.request.locale|default("de")|slice(0, 2) }}">
+
+  <head>{% block head %}
+        <meta charset="utf-8">
+        <title>{% block title "Straßen von St. Pauli" %}</title>
+        <meta name="description" content="{% block description "Straßen von St. Pauli ist eine Kartierung der Eigentumsverhältnisse in St. Pauli, die durch eine AG von St. Pauli selber machen entwickelt wird." %}">
+        <meta name="keywords" content="">
+        {% block og_tags -%}
+        {{ macro.og_tag("title", block("title")) }}
+        {{ macro.og_tag("description", block("description")) }}
+        {{ macro.og_tag("type", "website") }}
+        {{ macro.og_tag("url", app.request.uri) }}
+        {{ macro.og_tag("image", app.request.schemeandhttphost ~ asset("images/share.jpg")) }}
+        {% endblock og_tags -%}
+
+        <meta name="viewport" content="width=device-width">
+        <link rel="icon" href="{{ asset("favicon.png") }}" type="image/png" />
+
+        {% block stylesheets -%}
+        <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:300,600">
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+        <link rel="stylesheet" href="{{ asset("css/main.css") }}">
+        {% endblock stylesheets -%}
+
+        <script>
+        {% include 'config.js.twig' %}
+        </script>
+    {% endblock head %}</head>
+
+    {% block bodytag '<body>' %}{% block body %}
+        <!--[if lt IE 10]>
+            <p class="browsehappy">Du verwendest einen <strong>veralteten</strong> Browser. Bitte <a href="http://browsehappy.com/">aktualisiere deinen Browser</a> für ein optimales Surferlebnis.</p>
+        <![endif]-->
+
+        {% include 'header.html.twig' with { title: block("title") } %}
+
+        <main role="main">
+            <div id="map-canvas" class="map"></div>
+
+            {% block content %}
+                <div class="container">
+                    <div class="row">
+                        <div class="content col-xs-12 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
+                            {% block jumbotron '' %}
+                        </div>
+                    </div>
+                </div>
+            {% endblock %}
+        </main>
+
+    {% endblock body %}
+
+        {% block javascripts %}
+        <script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+        <script src="//code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
+        <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+        <script src="//maps.google.com/maps/api/js?sensor=false"></script>
+        <script src="//google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/src/markerclusterer_compiled.js"></script>
+        <script src="{{ asset("js/main.js") }}"></script>
+        {% endblock javascripts %}
+
+        {% if app.google_analytics.property_id|default(false) -%}
+        <script>(function(e,t,n,r,i,s,o){e["GoogleAnalyticsObject"]=i;e[i]=e[i]||function(){(e[i].q=e[i].q||[]).push(arguments)},e[i].l=1*new Date;s=t.createElement(n),o=t.getElementsByTagName(n)[0];s.async=1;s.src=r;o.parentNode.insertBefore(s,o)})(window,document,"script","//www.google-analytics.com/analytics.js","ga");ga("create","{{ app.google_analytics.property_id }}","auto");ga("send","pageview")</script>
+        {% endif %}
+    </body>
+</html>

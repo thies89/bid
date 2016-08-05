@@ -1,0 +1,26 @@
+{% extends 'layout.html.twig' %}
+
+{% block content %}
+    {% set legend = get_legend() %}
+
+    {% if legend is not empty %}
+        <style>
+            {% for legendItem in legend %}
+                .icon--{{ legendItem.name|slugify }} {
+                    background-color: {{ legendItem.color }};
+                }
+            {% endfor %}
+        </style>
+
+        <ul id="legend" class="legend hidden-xs">
+            <h3 class="legend__title">Legende Eigentumsverhältnisse</h3>
+            <hr class="legend__separator">
+            {% for legendItem in legend %}
+                <li>
+                    <i class="icon icon--{{ legendItem.name|slugify }}"></i>
+                    <span>{{ legendItem.name }}</span>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endblock %}

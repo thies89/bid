@@ -1,0 +1,253 @@
+/*
+ * Style tweaks
+ * --------------------------------------------------
+ */
+::selection {
+  background: #000;
+  color: #fff;
+}
+::-moz-selection {
+  background: #000;
+  color: #fff;
+}
+
+html,
+body {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 18px;
+    font-weight: 300;
+    line-height: 1.6;
+    min-width: 320px;
+    overflow-x: hidden; /* Prevent scroll on narrow devices */
+}
+
+a {
+    color: #d1371f;
+    transition: color .25s ease-in-out;
+}
+
+a:hover,
+a:focus {
+    color: #ff4326;
+    text-decoration: none;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-weight: 600;
+    margin: 1.5em 0 1em;
+}
+
+hr {
+    border: 0;
+    border-top: 1px solid #9d9d9d;
+    margin: 2rem 0;
+}
+
+textarea {
+    resize: vertical;
+}
+
+.unbreakable {
+    white-space: nowrap;
+}
+
+/*
+ * Buttons
+ * --------------------------------------------------
+ */
+.btn-primary {
+    color: #fff;
+    background-color: #d1371f;
+    border-color: #ba311c;
+}
+
+.btn-primary.active,
+.btn-primary.focus,
+.btn-primary:active,
+.btn-primary:focus,
+.btn-primary:hover,
+.open > .dropdown-toggle.btn-primary {
+    background-color: #ff4326;
+    border-color: #b32f1b;
+}
+
+
+/*
+ * Main navigation
+ * --------------------------------------------------
+ */
+.navbar {
+    box-shadow: 0 1.5px 4px rgba(0, 0, 0, 0.24), 0 1.5px 6px rgba(0, 0, 0, 0.12);
+    margin-bottom: 0;
+}
+
+.navbar-inverse .navbar-brand:hover,
+.navbar-inverse .navbar-brand:focus {
+    color: #9d9d9d;
+}
+
+.navbar-brand {
+    line-height: 50px;
+    padding-bottom: 0;
+    padding-top: 0;
+    vertical-align: middle;
+}
+
+@media (max-width: 350px) {
+  .navbar-brand {
+      font-size: 85%;
+  }
+}
+
+.navbar-brand > img {
+    display: inline-block;
+    margin-right: 1em;
+}
+
+.navbar-inverse {
+    background: #000;
+    border-color: #9d9d9d;
+}
+
+/*
+ * Map
+ * --------------------------------------------------
+ */
+main[role="main"] {
+   position: relative;
+   min-height: 100vh;
+}
+
+.map {
+  background: #f2f2f2;
+  height: calc(100% - 50px);
+  left: 0;
+  position: absolute;
+  top: 50px;
+  width: 100%;
+}
+
+/*
+ * Map legend
+ * --------------------------------------------------
+ */
+.legend {
+    background: #fff;
+    border: 1px solid #ccc;
+    bottom: 30px;
+    box-shadow: 0 1.5px 4px rgba(0, 0, 0, 0.24), 0 1.5px 6px rgba(0, 0, 0, 0.12);
+    cursor: move;
+    font-size: 15px;
+    list-style: none;
+    padding: 1.5em 2em;
+    position: absolute;
+    right: 50px;
+    z-index: 10;
+}
+
+.legend__title {
+    font-size: 1.1em;
+    margin: 0;
+}
+
+.legend__separator {
+    margin: .7em -.5em .5em;
+}
+
+.icon {
+    border-radius: 50%;
+    display: inline-block;
+    height: .9em;
+    line-height: 1em;
+    margin-right: 1em;
+    vertical-align: middle;
+    width: .9em;
+}
+
+
+/*
+ * Content container
+ * --------------------------------------------------
+ */
+.content {
+    background: #fff;
+    box-shadow: 0 1.5px 4px rgba(0, 0, 0, 0.24), 0 1.5px 6px rgba(0, 0, 0, 0.12);
+    margin-bottom: 5em;
+    margin-top: 50px;
+    padding: 2em;
+}
+
+@media (min-width: 768px) {
+    .content {
+        margin-top: 86px;
+    }
+}
+
+.content > h2:first-child {
+    margin-top: 1em;
+}
+
+/*
+ * Form
+ * --------------------------------------------------
+ */
+.form {
+    margin-top: 3em;
+}
+
+.form-group label {
+  font-size: 14px;
+}
+.form-group:nth-of-type(5) {
+    margin-bottom: 2em;
+    margin-top: 3em;
+}
+
+.form-optional .form-group:nth-of-type(2),
+.form-optional .form-group:nth-of-type(4) {
+    display: none;
+}
+
+
+.form-optional__title {
+    font-size: 14px;
+    margin-bottom: 3em;
+    margin-top: 1em;
+}
+
+@media (min-width: 768px) {
+    .form-optional .col-sm-2 {
+        width: 33%;
+    }
+
+    .form-optional .col-sm-10 {
+        width: 66%;
+    }
+}
+
+.form button {
+    margin-top: 2em;
+}
+
+/*
+ * Glossary
+ * --------------------------------------------------
+ */
+.glossary-toc {
+    list-style: none;
+    padding-top: 65px;
+}
+
+.glossary {
+    margin-top: 3em;
+}
+
+.glossary__item-title {
+    margin-top: 0;
+    padding-top: 65px;
+}

@@ -1,0 +1,40 @@
+{%- macro item(path, title, route) -%}
+    <li{{ route == path ? ' class="active"' }}><a href="{{ path(path) }}">{{ title }}</a></li>
+{%- endmacro -%}
+
+{% import _self as nav %}
+
+<header>
+    <nav class="navbar navbar-default navbar-fixed-top navbar-inverse">
+      <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <div class="navbar-brand">
+            <img alt="St. Pauli selber machen" src="{{ asset("images/spsm.png") }}">
+            <span>{{ title }}</span>
+          </div>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+          <ul class="nav navbar-nav">
+            {% set route = app.request.get('_route') %}
+
+            {{ nav.item("map", "Karte", route) }}
+            {{ nav.item("add", "Mitmachen", route) }}
+            {{ nav.item("info", "Wir", route) }}
+            {{ nav.item("glossary", "Glossar", route) }}
+            {{ nav.item("privacy", "Datenschutz", route) }}
+
+            <li><a href="mailto:strassen-von-st-pauli@st-pauli-selber-machen.de?subject=Kontakt%20Website">Kontakt</a></li>
+          </ul>
+        </div><!-- /.navbar-collapse -->
+      </div><!-- /.container-fluid -->
+    </nav>
+</header>
