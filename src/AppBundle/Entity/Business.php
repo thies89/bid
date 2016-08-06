@@ -95,35 +95,27 @@ class Business
     protected $moreIndustry;
 
     /**
-     * @var string
+     * @var OutdoorArea
      *
-     * @ORM\Column(type="string", nullable=true)
-     * @Assert\Email(
-     *     checkMX = true
+     * @ORM\ManyToOne(
+     *     targetEntity="OutdoorArea",
+     *     inversedBy="business",
      * )
+     * @ORM\JoinColumn(
+     *     name="outdoorarea_id",
+     *     referencedColumnName="id",
+     *     onDelete="SET NULL"
+     * )
+     * @Assert\NotBlank()
      */
-    protected $contact;
+    protected $outdoorArea;
 
     /**
-     * @var array
+     * @var bool
      *
-     * @ORM\Column(type="array", nullable=true)
+     * @ORM\Column(type="boolean")
      */
-    protected $contactUse;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="string", nullable=true)
-     */
-    protected $own;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="string", nullable=true)
-     */
-    protected $source;
+    protected $branded;
 
     /**
      * @var int
@@ -139,41 +131,6 @@ class Business
     protected $endY;
 
     /**
-     * @var array
-     *
-     * @ORM\Column(type="array", nullable=true)
-     */
-    protected $flatAttr;
-
-    /**
-     * @var int
-     *
-     * @ORM\Column(type="integer", nullable=true)
-     */
-    protected $numberFlat;
-
-    /**
-     * @var int
-     *
-     * @ORM\Column(type="integer", nullable=true)
-     */
-    protected $numberInd;
-
-    /**
-     * @var float
-     *
-     * @ORM\Column(type="float", nullable=true)
-     */
-    protected $price;
-
-    /**
-     * @var float
-     *
-     * @ORM\Column(type="float", nullable=true)
-     */
-    protected $size;
-
-    /**
      * @var string
      *
      * @ORM\Column(type="text", nullable=true)
@@ -187,14 +144,6 @@ class Business
      */
     protected $createdAt;
 
-    /**
-     * @var bool
-     *
-     * @ORM\Column(type="boolean")
-     */
-    protected $checked;
-
-
     public function __construct()
     {
         $this->createdAt = new \DateTime();
@@ -202,7 +151,7 @@ class Business
     }
 
     /**
-     * Gets the value of id.
+     * Get the value of Id
      *
      * @return int
      */
@@ -212,9 +161,9 @@ class Business
     }
 
     /**
-     * Sets the value of id.
+     * Set the value of Id
      *
-     * @param int $id the id
+     * @param int id
      *
      * @return self
      */
@@ -226,7 +175,31 @@ class Business
     }
 
     /**
-     * Gets the value of address.
+     * Get the value of Label
+     *
+     * @return string
+     */
+    public function getLabel()
+    {
+        return $this->label;
+    }
+
+    /**
+     * Set the value of Label
+     *
+     * @param string label
+     *
+     * @return self
+     */
+    public function setLabel($label)
+    {
+        $this->label = $label;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of Address
      *
      * @return string
      */
@@ -236,9 +209,9 @@ class Business
     }
 
     /**
-     * Sets the value of address.
+     * Set the value of Address
      *
-     * @param string $address the address
+     * @param string address
      *
      * @return self
      */
@@ -250,7 +223,7 @@ class Business
     }
 
     /**
-     * Gets the value of addressInfo.
+     * Get the value of Address Info
      *
      * @return string
      */
@@ -260,9 +233,9 @@ class Business
     }
 
     /**
-     * Sets the value of addressInfo.
+     * Set the value of Address Info
      *
-     * @param string $addressInfo the address info
+     * @param string addressInfo
      *
      * @return self
      */
@@ -274,7 +247,31 @@ class Business
     }
 
     /**
-     * Gets the value of lat.
+     * Get the value of Levels
+     *
+     * @return int
+     */
+    public function getLevels()
+    {
+        return $this->levels;
+    }
+
+    /**
+     * Set the value of Levels
+     *
+     * @param int levels
+     *
+     * @return self
+     */
+    public function setLevels($levels)
+    {
+        $this->levels = $levels;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of Lat
      *
      * @return float
      */
@@ -284,31 +281,21 @@ class Business
     }
 
     /**
-     * Gets the value of lat obfuscated.
+     * Set the value of Lat
      *
-     * @return float
-     */
-    public function getLatObfuscated()
-    {
-        return $this->obfuscate($this->lat);
-    }
-
-    /**
-     * Sets the value of lat.
-     *
-     * @param float $lat the lat
+     * @param float lat
      *
      * @return self
      */
     public function setLat($lat)
     {
-        $this->lat = $this->obfuscate($lat);
+        $this->lat = $lat;
 
         return $this;
     }
 
     /**
-     * Gets the value of lng.
+     * Get the value of Lng
      *
      * @return float
      */
@@ -318,176 +305,141 @@ class Business
     }
 
     /**
-     * Gets the value of lng obfuscated.
+     * Set the value of Lng
      *
-     * @return float
-     */
-    public function getLngObfuscated()
-    {
-        return $this->obfuscate($this->lng);
-    }
-
-    /**
-     * Sets the value of lng.
-     *
-     * @param float $lng the lng
+     * @param float lng
      *
      * @return self
      */
     public function setLng($lng)
     {
-        $this->lng = $this->obfuscate($lng);
+        $this->lng = $lng;
 
         return $this;
     }
 
     /**
-     * Gets the Category
+     * Get the value of Usage
      *
-     * @return Category
+     * @return Usage
      */
-    public function getCategory()
+    public function getUsage()
     {
-        return $this->category;
+        return $this->usage;
     }
 
     /**
-     * Sets the Category
+     * Set the value of Usage
      *
-     * @param Category $category the category
+     * @param Usage usage
      *
      * @return self
      */
-    public function setCategory(Category $category)
+    public function setUsage(Usage $usage)
     {
-        $category->addMarker($this);
-        $this->category = $category;
+        $this->usage = $usage;
 
         return $this;
     }
 
     /**
-     * Gets the value of usageType.
+     * Get the value of Inhabited
      *
-     * @return string
+     * @return bool
      */
-    public function getUsageType()
+    public function getInhabited()
     {
-        return $this->usageType;
+        return $this->inhabited;
     }
 
     /**
-     * Sets the value of usageType.
+     * Set the value of Inhabited
      *
-     * @param string $usageType the usageType
+     * @param bool inhabited
      *
      * @return self
      */
-    public function setUsageType($usageType)
+    public function setInhabited($inhabited)
     {
-        $this->usageType = $usageType;
+        $this->inhabited = $inhabited;
 
         return $this;
     }
 
     /**
-     * Gets the value of contact.
+     * Get the value of More Industry
      *
-     * @return string
+     * @return bool
      */
-    public function getContact()
+    public function getMoreIndustry()
     {
-        return $this->contact;
+        return $this->moreIndustry;
     }
 
     /**
-     * Sets the value of contact.
+     * Set the value of More Industry
      *
-     * @param string $contact the contact
+     * @param bool moreIndustry
      *
      * @return self
      */
-    public function setContact($contact)
+    public function setMoreIndustry($moreIndustry)
     {
-        $this->contact = $contact;
+        $this->moreIndustry = $moreIndustry;
 
         return $this;
     }
 
     /**
-     * Gets the value of contactUse.
+     * Get the value of Outdoor Area
      *
-     * @return array
+     * @return OutdoorArea
      */
-    public function getContactUse()
+    public function getOutdoorArea()
     {
-        return $this->contactUse;
+        return $this->outdoorArea;
     }
 
     /**
-     * Sets the value of contactUse.
+     * Set the value of Outdoor Area
      *
-     * @param array $contactUse the contact use
+     * @param OutdoorArea outdoorArea
      *
      * @return self
      */
-    public function setContactUse(array $contactUse)
+    public function setOutdoorArea(OutdoorArea $outdoorArea)
     {
-        $this->contactUse = $contactUse;
+        $this->outdoorArea = $outdoorArea;
 
         return $this;
     }
 
     /**
-     * Gets the value of own.
+     * Get the value of Branded
      *
-     * @return string
+     * @return bool
      */
-    public function getOwn()
+    public function getBranded()
     {
-        return $this->own;
+        return $this->branded;
     }
 
     /**
-     * Sets the value of own.
+     * Set the value of Branded
      *
-     * @param string $own the own
+     * @param bool branded
      *
      * @return self
      */
-    public function setOwn($own)
+    public function setBranded($branded)
     {
-        $this->own = $own;
+        $this->branded = $branded;
 
         return $this;
     }
 
     /**
-     * Gets the value of source.
-     *
-     * @return string
-     */
-    public function getSource()
-    {
-        return $this->source;
-    }
-
-    /**
-     * Sets the value of source.
-     *
-     * @param string $source the source
-     *
-     * @return self
-     */
-    public function setSource($source)
-    {
-        $this->source = $source;
-
-        return $this;
-    }
-
-    /**
-     * Gets the value of startY.
+     * Get the value of Start
      *
      * @return int
      */
@@ -497,9 +449,9 @@ class Business
     }
 
     /**
-     * Sets the value of startY.
+     * Set the value of Start
      *
-     * @param int $startY the start
+     * @param int startY
      *
      * @return self
      */
@@ -511,7 +463,7 @@ class Business
     }
 
     /**
-     * Gets the value of endY.
+     * Get the value of End
      *
      * @return int
      */
@@ -521,9 +473,9 @@ class Business
     }
 
     /**
-     * Sets the value of endY.
+     * Set the value of End
      *
-     * @param int $endY the end
+     * @param int endY
      *
      * @return self
      */
@@ -535,127 +487,7 @@ class Business
     }
 
     /**
-     * Gets the value of flatAttr.
-     *
-     * @return array
-     */
-    public function getFlatAttr()
-    {
-        return $this->flatAttr;
-    }
-
-    /**
-     * Sets the value of flatAttr.
-     *
-     * @param array $flatAttr the flat attr
-     *
-     * @return self
-     */
-    public function setFlatAttr(array $flatAttr)
-    {
-        $this->flatAttr = $flatAttr;
-
-        return $this;
-    }
-
-    /**
-     * Gets the value of numberFlat.
-     *
-     * @return int
-     */
-    public function getNumberFlat()
-    {
-        return $this->numberFlat;
-    }
-
-    /**
-     * Sets the value of numberFlat.
-     *
-     * @param int $numberFlat the number flat
-     *
-     * @return self
-     */
-    public function setNumberFlat($numberFlat)
-    {
-        $this->numberFlat = $numberFlat;
-
-        return $this;
-    }
-
-    /**
-     * Gets the value of numberInd.
-     *
-     * @return int
-     */
-    public function getNumberInd()
-    {
-        return $this->numberInd;
-    }
-
-    /**
-     * Sets the value of numberInd.
-     *
-     * @param int $numberInd the number ind
-     *
-     * @return self
-     */
-    public function setNumberInd($numberInd)
-    {
-        $this->numberInd = $numberInd;
-
-        return $this;
-    }
-
-    /**
-     * Gets the value of price.
-     *
-     * @return float
-     */
-    public function getPrice()
-    {
-        return $this->price;
-    }
-
-    /**
-     * Sets the value of price.
-     *
-     * @param float $price the price
-     *
-     * @return self
-     */
-    public function setPrice($price)
-    {
-        $this->price = $price;
-
-        return $this;
-    }
-
-    /**
-     * Gets the value of size.
-     *
-     * @return float
-     */
-    public function getSize()
-    {
-        return $this->size;
-    }
-
-    /**
-     * Sets the value of size.
-     *
-     * @param float $size the size
-     *
-     * @return self
-     */
-    public function setSize($size)
-    {
-        $this->size = $size;
-
-        return $this;
-    }
-
-    /**
-     * Gets the value of comment.
+     * Get the value of Comment
      *
      * @return string
      */
@@ -665,9 +497,9 @@ class Business
     }
 
     /**
-     * Sets the value of comment.
+     * Set the value of Comment
      *
-     * @param string $comment the comment
+     * @param string comment
      *
      * @return self
      */
@@ -679,7 +511,7 @@ class Business
     }
 
     /**
-     * Gets the value of createdAt.
+     * Get the value of Created At
      *
      * @return \DateTime
      */
@@ -689,9 +521,9 @@ class Business
     }
 
     /**
-     * Sets the value of createdAt.
+     * Set the value of Created At
      *
-     * @param \DateTime $createdAt the created at
+     * @param \DateTime createdAt
      *
      * @return self
      */
@@ -702,43 +534,4 @@ class Business
         return $this;
     }
 
-    /**
-     * Gets the value of checked.
-     *
-     * @return bool
-     */
-    public function isChecked()
-    {
-        return $this->checked;
-    }
-
-    /**
-     * Sets the value of checked.
-     *
-     * @param bool $checked the checked
-     *
-     * @return self
-     */
-    public function setChecked($checked)
-    {
-        $this->checked = $checked;
-
-        return $this;
-    }
-
-
-    /**
-     * Obfuscate a coordinate
-     *
-     * @param  float $coordinate
-     *
-     * @return float
-     */
-    private function obfuscate($coordinate) {
-        if (rand(0, 1) < 0.5) {
-            return $coordinate + ((float) rand(0, 500) - 500) / 2000000;
-        }
-
-        return $coordinate - ( (float) rand(0, 500) - 500) / 2000000;
-    }
 }
