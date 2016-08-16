@@ -83,14 +83,14 @@ class Business
     /**
      * @var bool
      *
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", nullable=true)
      */
     protected $inhabited;
 
     /**
      * @var bool
      *
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", nullable=true)
      */
     protected $moreIndustry;
 
@@ -106,16 +106,30 @@ class Business
      *     referencedColumnName="id",
      *     onDelete="SET NULL"
      * )
-     * @Assert\NotBlank()
      */
     protected $outdoorArea;
 
     /**
      * @var bool
      *
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", nullable=true)
      */
     protected $branded;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    protected $priceRange;
+
+    /**
+     * @var bool
+     *
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    protected $toGo;
+
 
     /**
      * @var int
@@ -149,6 +163,8 @@ class Business
         $this->createdAt = new \DateTime();
         $this->checked   = false;
     }
+
+
 
     /**
      * Get the value of Id
@@ -434,6 +450,54 @@ class Business
     public function setBranded($branded)
     {
         $this->branded = $branded;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of Price Range
+     *
+     * @return int
+     */
+    public function getPriceRange()
+    {
+        return $this->priceRange;
+    }
+
+    /**
+     * Set the value of Price Range
+     *
+     * @param int priceRange
+     *
+     * @return self
+     */
+    public function setPriceRange($priceRange)
+    {
+        $this->priceRange = $priceRange;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of To Go
+     *
+     * @return bool
+     */
+    public function getToGo()
+    {
+        return $this->toGo;
+    }
+
+    /**
+     * Set the value of To Go
+     *
+     * @param bool toGo
+     *
+     * @return self
+     */
+    public function setToGo($toGo)
+    {
+        $this->toGo = $toGo;
 
         return $this;
     }

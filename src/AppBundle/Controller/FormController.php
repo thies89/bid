@@ -6,11 +6,103 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
 
-use Strassen\AppBundle\Entity\Marker;
+use Strassen\AppBundle\Entity\Business;
+use Strassen\AppBundle\Entity\Usage;
+use Strassen\AppBundle\Entity\OutdoorArea;
 use Strassen\AppBundle\Form\AddType;
+
+use Ddeboer\DataImport\Reader\CsvReader;
 
 class FormController extends Controller
 {
+    /**
+     * @Route("/addc", name="content")
+     */
+    public function createAction(Request $request)
+    {
+      $em = $this->getDoctrine()->getManager();
+      $path = $this->getParameter('kernel.root_dir') . '/Resources/fixtures/';
+      $file = new \SplFileObject($path.'import1.csv');
+      $reader = new CsvReader($file);
+
+      $reader->setHeaderRowNumber(0);
+
+      foreach ($reader as $row) {
+          if ($row['usage'] === 'usage') {
+            continue;
+          }
+          // $row will now be an associative array:
+          $business = new Business();
+          $address = sprintf(
+            '%s %s',
+            $row['address'],
+            $row['number']
+          );
+
+          // add error handling (try catch) here
+          $geocoderResult = $this->get('bazinga_geocoder.geocoder')
+              ->using('google_maps')
+              ->geocode($address . ' Hamburg')
+          ;
+
+          // update marker with geocoded data
+          $business
+              ->setAddress(sprintf(
+                  '%s %s, %d %s (%s)',
+                  $geocoderResult->getStreetName(),
+                  $geocoderResult->getStreetNumber(),
+                  $geocoderResult->getZipcode(),
+                  $geocoderResult->getCity(),
+                  $geocoderResult->getCityDistrict()
+              ))
+              ->setLat($geocoderResult->getLatitude())
+              ->setLng($geocoderResult->getLongitude())
+          ;
+
+          $business->setAddressInfo($row['addressInfo']);
+          $business->setLevels($row['levels']);
+          $business->setLabel($row['label']);
+
+          $usageRow = $row['usage'];
+          $usage = $em->getRepository('AppBundle:Usage')->findBy(['name' => $usageRow]);
+          if(!$usage) {
+            $usage = new Usage();
+            $usage->setName($row['usage']);
+            $em->persist($usage);
+          }
+          $business->setUsage($row['usage']);
+
+          $business->setComment($row['comment']);
+          $business->setPriceRange($row['priceRange']);
+          $business->setToGo($row['toGo']);
+          $business->setStartY($row['startY']);
+          $business->setEndY($row['endY']);
+          $business->setInhabited($row['inhabited']);
+          $business->setMoreIndustry($row['moreIndustry']);
+
+          $seats = $row['seats'];
+          $barTable = $row['barTable'];
+          $railings = $row['railings'];
+          $roof = $row['roof'];
+
+          if($seats || $barTable || $railings || $roof)
+          {
+            $outdoorArea = new OutdoorArea();
+            $outdoorArea->setSeats($seats);
+            $outdoorArea->setBarTable($barTable);
+            $outdoorArea->setRailings($railings);
+            $outdoorArea->setRoof($roof);
+            $em->persist($outdoorArea);
+          }
+
+          $business->setBranded($row['branded']);
+          $business->setCreatedAt($row['createdAt']);
+
+          $em->persist($business);
+      }
+      $em->flush();
+    }
+
     /**
      * @Route("/mitmachen", name="add")
      */
