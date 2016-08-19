@@ -22,15 +22,14 @@ class FormController extends Controller
     {
       $em = $this->getDoctrine()->getManager();
       $path = $this->getParameter('kernel.root_dir') . '/Resources/fixtures/';
-      $file = new \SplFileObject($path.'import1.csv');
+      $file = new \SplFileObject($path.'import5.csv');
       $reader = new CsvReader($file);
 
       $reader->setHeaderRowNumber(0);
 
       foreach ($reader as $row) {
-          if ($row['usage'] === 'usage') {
-            continue;
-          }
+          // dump($row);
+          // continue;
           // $row will now be an associative array:
           $business = new Business();
           $address = sprintf(
@@ -38,11 +37,12 @@ class FormController extends Controller
             $row['address'],
             $row['number']
           );
-
+          //dump($address);
+          //die;
           // add error handling (try catch) here
           $geocoderResult = $this->get('bazinga_geocoder.geocoder')
               ->using('google_maps')
-              ->geocode($address . ' Hamburg')
+              ->geocode($address . ', Hamburg')
           ;
 
           // update marker with geocoded data
@@ -64,13 +64,21 @@ class FormController extends Controller
           $business->setLabel($row['label']);
 
           $usageRow = $row['usage'];
-          $usage = $em->getRepository('AppBundle:Usage')->findBy(['name' => $usageRow]);
+          // dump($usageRow);
+          // $qb = $em->getRepository('AppBundle:Usage')->createQueryBuilder('u');
+          // $usage = $qb->where($qb->expr()->like('u.name', '?1'))
+          //   ->setParameter(1 , $row['usage'])
+          //   ->getQuery()
+          //   ->getOneOrNullResult();
+          //   dump($usage);
+          $usage = $em->getRepository('AppBundle:Usage')->findOneBy(['name' => $row['usage']]);
+            // die;
           if(!$usage) {
             $usage = new Usage();
             $usage->setName($row['usage']);
             $em->persist($usage);
           }
-          $business->setUsage($row['usage']);
+          $business->setUsage($usage);
 
           $business->setComment($row['comment']);
           $business->setPriceRange($row['priceRange']);
@@ -96,7 +104,7 @@ class FormController extends Controller
           }
 
           $business->setBranded($row['branded']);
-          $business->setCreatedAt($row['createdAt']);
+          $business->setCreatedAt(new \DateTime($row['createdAt']));
 
           $em->persist($business);
       }
@@ -119,7 +127,7 @@ class FormController extends Controller
             // add error handling (try catch) here
             $geocoderResult = $this->get('bazinga_geocoder.geocoder')
                 ->using('google_maps')
-                ->geocode($marker->getAddress() . ' Hamburg')
+                ->geocode($marker->getAddress() . ', Hamburg')
             ;
 
             // update marker with geocoded data

@@ -8,7 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="usage")
+ * @ORM\Table(name="`usage`")
  */
 class Usage
 {
@@ -24,7 +24,7 @@ class Usage
     /**
      * @var string
      *
-     * @ORM\Column(type="string")
+     * @ORM\Column(name="`name`", type="string")
      * @Assert\NotBlank()
      */
     protected $name;
@@ -61,11 +61,11 @@ class Usage
      * @var ArrayCollection
      *
      * @ORM\OneToMany(
-     *     targetEntity="Marker",
-     *     mappedBy="category"
+     *     targetEntity="Business",
+     *     mappedBy="usage"
      * )
      */
-    protected $markers;
+    protected $business;
 
 
     public function __construct()
@@ -75,8 +75,10 @@ class Usage
         $this->weight  = 0;
     }
 
+
+
     /**
-     * Gets the value of id.
+     * Get the value of Id
      *
      * @return int
      */
@@ -86,9 +88,9 @@ class Usage
     }
 
     /**
-     * Sets the value of id.
+     * Set the value of Id
      *
-     * @param int $id the id
+     * @param int id
      *
      * @return self
      */
@@ -100,7 +102,7 @@ class Usage
     }
 
     /**
-     * Gets the value of name.
+     * Get the value of Name
      *
      * @return string
      */
@@ -110,9 +112,9 @@ class Usage
     }
 
     /**
-     * Sets the value of name.
+     * Set the value of Name
      *
-     * @param string $name the name
+     * @param string name
      *
      * @return self
      */
@@ -124,7 +126,7 @@ class Usage
     }
 
     /**
-     * Gets the value of shortdescription.
+     * Get the value of Shortdescription
      *
      * @return string
      */
@@ -134,9 +136,9 @@ class Usage
     }
 
     /**
-     * Sets the value of shortdescription.
+     * Set the value of Shortdescription
      *
-     * @param string $shortdescription the shortdescription
+     * @param string shortdescription
      *
      * @return self
      */
@@ -148,7 +150,7 @@ class Usage
     }
 
     /**
-     * Gets the value of fulldescription.
+     * Get the value of Fulldescription
      *
      * @return string
      */
@@ -158,9 +160,9 @@ class Usage
     }
 
     /**
-     * Sets the value of fulldescription.
+     * Set the value of Fulldescription
      *
-     * @param string $fulldescription the fulldescription
+     * @param string fulldescription
      *
      * @return self
      */
@@ -172,7 +174,7 @@ class Usage
     }
 
     /**
-     * Gets the value of color.
+     * Get the value of Color
      *
      * @return string
      */
@@ -182,13 +184,13 @@ class Usage
     }
 
     /**
-     * Sets the value of color.
+     * Set the value of Color
      *
-     * @param string $color the color
+     * @param string color
      *
      * @return self
      */
-    protected function setColor($color)
+    public function setColor($color)
     {
         $this->color = $color;
 
@@ -196,56 +198,51 @@ class Usage
     }
 
     /**
-     * Gets the markers.
+     * Get the value of Weight
+     *
+     * @return int
+     */
+    public function getWeight()
+    {
+        return $this->weight;
+    }
+
+    /**
+     * Set the value of Weight
+     *
+     * @param int weight
+     *
+     * @return self
+     */
+    public function setWeight($weight)
+    {
+        $this->weight = $weight;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of Business
      *
      * @return ArrayCollection
      */
-    public function getMarkers()
+    public function getBusiness()
     {
-        return $this->markers;
+        return $this->business;
     }
 
     /**
-     * Sets the markers.
+     * Set the value of Business
      *
-     * @param  ArrayCollection $markers the markers
+     * @param ArrayCollection business
      *
      * @return self
      */
-    public function setMarkers(ArrayCollection $markers)
+    public function setBusiness(ArrayCollection $business)
     {
-        $this->markers = $markers;
+        $this->business = $business;
 
         return $this;
     }
 
-    /**
-     * Adds a Marker.
-     *
-     * @param  Marker $marker
-     *
-     * @return self
-     */
-    public function addMarker(Marker $marker)
-    {
-        if (!$this->markers->contains($marker)) {
-            $this->markers->add($marker);
-        }
-
-        return $this;
-    }
-
-    /**
-     * Removes a Marker.
-     *
-     * @param  Marker $marker
-     *
-     * @return self
-     */
-    public function removeMarker(Marker $marker)
-    {
-        $this->markers->removeElement($marker);
-
-        return $this;
-    }
 }

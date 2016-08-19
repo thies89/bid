@@ -83,7 +83,18 @@ swiftmailer:
 
 
 # Geocoder Configuration
-bazinga_geocoder:
-    providers:
-        google_maps: ~
 
+# app/config/config*.yml
+bazinga_geocoder:
+    # fake_ip:
+    #     enabled:              true
+    #     ip:                   null
+    #     priority:             0
+    # adapter:                    ~ # An adapter service id
+    # default_provider:         ~ # Name of provider, e.g. chain
+    providers:
+        google_maps:
+            locale:               null
+            region:               null
+            use_ssl:              true
+            api_key:              AIzaSyB7ZYsytmuppa9L6ZlNCgapsFBqdRr6VPk
