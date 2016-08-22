@@ -49,7 +49,7 @@ function initialize() {
     );
 
     $.get(CONFIG.map.markerUrl, function(data) {
-      console.log(data);
+      // console.log(data);
         var markers = data.map(function(business) {
                 icon = getMarkerIcon(business.usage.color);
 

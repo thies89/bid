@@ -28,8 +28,7 @@ class FormController extends Controller
       $reader->setHeaderRowNumber(0);
 
       foreach ($reader as $row) {
-          // dump($row);
-          // continue;
+
           // $row will now be an associative array:
           $business = new Business();
           $address = sprintf(
@@ -37,8 +36,7 @@ class FormController extends Controller
             $row['address'],
             $row['number']
           );
-          //dump($address);
-          //die;
+
           // add error handling (try catch) here
           $geocoderResult = $this->get('bazinga_geocoder.geocoder')
               ->using('google_maps')
@@ -83,16 +81,16 @@ class FormController extends Controller
 
           $business->setComment($row['comment']);
           $business->setPriceRange($row['priceRange']);
-          $business->setToGo($row['toGo']);
+          $business->setToGo($row['toGo'] ? (boolean) $row['toGo'] : null);
           $business->setStartY($row['startY']);
           $business->setEndY($row['endY']);
-          $business->setInhabited($row['inhabited']);
-          $business->setMoreIndustry($row['moreIndustry']);
+          $business->setInhabited($row['inhabited'] ? (boolean) $row['inhabited'] : null);
+          $business->setMoreIndustry($row['moreIndustry'] ? (boolean) $row['moreIndustry'] : null);
 
           $seats = $row['seats'];
           $barTable = $row['barTable'];
-          $railings = $row['railings'];
-          $roof = $row['roof'];
+          $railings = $row['railings'] ? (boolean) $row['railings'] : null;
+          $roof = $row['roof'] ? (boolean) $row['roof'] : null;
 
           if($seats || $barTable || $railings || $roof)
           {
@@ -104,7 +102,7 @@ class FormController extends Controller
             $em->persist($outdoorArea);
           }
 
-          $business->setBranded($row['branded']);
+          $business->setBranded($row['branded'] ? (boolean) $row['branded'] : null);
           $business->setCreatedAt(new \DateTime($row['createdAt']));
 
           $em->persist($business);
