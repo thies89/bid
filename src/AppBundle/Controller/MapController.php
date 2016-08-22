@@ -24,18 +24,18 @@ class MapController extends Controller
     public function markerAction()
     {
         $repository = $this->getDoctrine()
-            ->getRepository('AppBundle:Marker')
+            ->getRepository('AppBundle:Business')
         ;
 
         $marker = $repository->findAll();
 
         $marker = array_map(function($singleMarker) {
             return array(
-                'lat'      => $singleMarker->getLatObfuscated(),
-                'lng'      => $singleMarker->getLngObfuscated(),
-                'category' => array(
-                    'name'  => PrivacyProtector::obfuscateName($singleMarker->getCategory()->getName()),
-                    'color' => PrivacyProtector::obfuscateColor($singleMarker->getCategory()->getColor()),
+                'lat'      => $singleMarker->getLat(),
+                'lng'      => $singleMarker->getLng(),
+                'usage' => array(
+                    'name'  => PrivacyProtector::obfuscateName($singleMarker->getUsage()->getName()),
+                    'color' => PrivacyProtector::obfuscateColor($singleMarker->getUsage()->getColor()),
                 ),
             );
         } , $marker);

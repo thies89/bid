@@ -49,13 +49,14 @@ function initialize() {
     );
 
     $.get(CONFIG.map.markerUrl, function(data) {
-        var markers = data.map(function(marker) {
-                icon = getMarkerIcon(marker.category.color);
+      console.log(data);
+        var markers = data.map(function(business) {
+                icon = getMarkerIcon(business.usage.color);
 
                 return new google.maps.Marker({
-                    position: new google.maps.LatLng(marker.lat, marker.lng),
+                    position: new google.maps.LatLng(business.lat, business.lng),
                     map     : map,
-                    title   : marker.category.name,
+                    title   : business.usage.name,
                     icon    : icon
                 });
             }),
@@ -97,6 +98,3 @@ function initialize() {
 }
 
 google.maps.event.addDomListener(window, 'load', initialize);
-
-
-

@@ -77,6 +77,7 @@ class FormController extends Controller
             $usage = new Usage();
             $usage->setName($row['usage']);
             $em->persist($usage);
+            $em->flush($usage);
           }
           $business->setUsage($usage);
 
