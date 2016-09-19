@@ -16,16 +16,95 @@ use Ddeboer\DataImport\Reader\CsvReader;
 class FormController extends Controller
 {
     /**
-     * @Route("/addc", name="content")
+     * @Route("/addContent", name="content")
      */
     public function createAction(Request $request)
     {
       $em = $this->getDoctrine()->getManager();
       $path = $this->getParameter('kernel.root_dir') . '/Resources/fixtures/';
-      $file = new \SplFileObject($path.'import5.csv');
+      $file = new \SplFileObject($path.'import6.csv');
       $reader = new CsvReader($file);
 
       $reader->setHeaderRowNumber(0);
+
+      $bar = new Usage();
+      $bar->setName('Bar');
+      $em->persist($bar);
+      $dienstleistung = new Usage();
+      $dienstleistung->setName('Dienstleistung');
+      $em->persist($dienstleistung);
+      $einzelhandel = new Usage();
+      $einzelhandel->setName('Einzelhandel');
+      $em->persist($einzelhandel);
+      $erotic = new Usage();
+      $erotic->setName('Erotic');
+      $em->persist($erotic);
+      $gastronomie = new Usage();
+      $gastronomie->setName('Gastronomie');
+      $em->persist($gastronomie);
+      $gluecksspiel = new Usage();
+      $gluecksspiel->setName('Glücksspiel');
+      $em->persist($gluecksspiel);
+      $kultur = new Usage();
+      $kultur->setName('Kultur');
+      $em->persist($kultur);
+      $nachtleben = new Usage();
+      $nachtleben->setName('Nachtleben');
+      $em->persist($nachtleben);
+      $sonstiges = new Usage();
+      $sonstiges->setName('Sonstiges');
+      $em->persist($sonstiges);
+      $tourismus = new Usage();
+      $tourismus->setName('Tourismus');
+      $em->persist($tourismus);
+      $unterhaltung = new Usage();
+      $unterhaltung->setName('Unterhaltung');
+      $em->persist($unterhaltung);
+
+      $em->flush();
+
+      $categories = [
+        'Apotheke'  => $einzelhandel,
+        'Außenbar' => $bar,
+        'Bank' => $dienstleistung,
+        'Bar' => $bar,
+        'Bordel' => $erotic,
+        'Burlesque Bar' => $bar,
+        'Café' => $gastronomie,
+        'Casino' => $gluecksspiel,
+        'Club' => $nachtleben,
+        'Dienstleistung' => $dienstleistung,
+        'Diskothek' => $nachtleben,
+        'Einzelhandel' => $einzelhandel,
+        'Fast Food' => $gastronomie,
+        'Galerie' => $kultur,
+        'Garage' => $sonstiges,
+        'Hotel' => $tourismus,
+        'Irish Pub' => $bar,
+        'Kiosk' => $einzelhandel,
+        'Kirche' => $sonstiges,
+        'Kneipe' => $bar,
+        'Leerstand' => $sonstiges,
+        'Leihhaus' => $dienstleistung,
+        'Lounge' => $nachtleben,
+        'Museum' => $kultur,
+        'Polizeikommissariat' => $sonstiges,
+        'Pub' => $bar,
+        'Reise Center' => $tourismus,
+        'Restaurant' => $gastronomie,
+        'Sexshop' => $erotic,
+        'Spielhalle' => $gluecksspiel,
+        'Stripklub' => $erotic,
+        'Supermarkt' => $einzelhandel,
+        'Table Dance' => $erotic,
+        'Tanzbar' => $bar,
+        'Theater' => $unterhaltung,
+        'Tourishop' => $tourismus,
+        'Travestie' => $unterhaltung,
+        'Unterhaltung' => $unterhaltung,
+        'Veranstaltungsfläche' => $unterhaltung,
+        'Wohnungen' => $sonstiges,
+      ];
 
       foreach ($reader as $row) {
 
@@ -72,8 +151,15 @@ class FormController extends Controller
           $usage = $em->getRepository('AppBundle:Usage')->findOneBy(['name' => $row['usage']]);
             // die;
           if(!$usage) {
+
             $usage = new Usage();
             $usage->setName($row['usage']);
+
+            if (array_key_exists($row['usage'], $categories)) {
+              $parent = $categories[$row['usage']];
+              $usage->setParent($parent);
+            }
+
             $em->persist($usage);
             $em->flush($usage);
           }
@@ -109,6 +195,102 @@ class FormController extends Controller
       }
       $em->flush();
     }
+
+    /**
+     * @Route("/changeColor", name="color")
+     */
+    public function changeAction(Request $request)
+    {
+      $bar = '#FFD700'; //gold
+      $dienstleistung = '#696969'; //DimGray
+      $einzelhandel = '#8B0000'; //DarkRed
+      $erotic = '#FF1493'; //DeepPink
+      $gastronomie = '#FF8C00'; //DarkOrange
+      $gluecksspiel = '#000000'; //black
+      $kultur = '#006400'; //DarkGreen
+      $nachtleben = '#00008B'; //DarkBlue
+      $sonstiges = '#D3D3D3'; //LightGray
+      $tourismus = '#F5F5F5'; //WhiteSmoke
+      $unterhaltung = '#32CD32'; //LimeGreen
+
+      $colors = [
+        //Bar
+        'Außenbar' => $bar,
+        'Bar' => $bar,
+        'Burlesque Bar' => $bar,
+        'Irish Pub' => $bar,
+        'Kneipe' => $bar,
+        'Pub' => $bar,
+        'Tanzbar' => $bar,
+
+        //Dienstleistung
+        'Bank' => $dienstleistung,
+        'Dienstleistung' => $dienstleistung,
+        'Leihhaus' => $dienstleistung,
+
+        //Einzelhandel
+        'Apotheke'  => $einzelhandel,
+        'Einzelhandel' => $einzelhandel,
+        'Kiosk' => $einzelhandel,
+        'Supermarkt' => $einzelhandel,
+
+        //Erotic
+        'Bordel' => $erotic,
+        'Sexshop' => $erotic, //zu Einzelhandel?
+        'Stripklub' => $erotic,
+        'Table Dance' => $erotic,
+
+        //Gastronomie
+        'Café' => $gastronomie,
+        'Fast Food' => $gastronomie,
+        'Restaurant' => $gastronomie,
+
+        //Gluecksspiel
+        'Casino' => $gluecksspiel,
+        'Spielhalle' => $gluecksspiel,
+
+        //Kultur
+        'Galerie' => $kultur,
+        'Museum' => $kultur,
+
+        //Nachtleben
+        'Club' => $nachtleben,
+        'Diskothek' => $nachtleben,
+        'Lounge' => $nachtleben,
+
+        //Sonstiges
+        'Garage' => $sonstiges,
+        'Kirche' => $sonstiges,
+        'Leerstand' => $sonstiges,
+        'Polizeikommissariat' => $sonstiges,
+        'Wohnungen' => $sonstiges,
+
+        //Tourismus
+        'Hotel' => $tourismus,
+        'Reise Center' => $tourismus,
+        'Tourishop' => $tourismus, //zu Einzelhandel?
+
+        //Unterhaltung
+        'Theater' => $unterhaltung, //zu Kultur?
+        'Travestie' => $unterhaltung,
+        'Unterhaltung' => $unterhaltung,
+        'Veranstaltungsfläche' => $unterhaltung,
+
+      ];
+
+      $em = $this->getDoctrine()->getManager();
+
+      foreach ($colors as $name => $color) {
+        $usage = $em->getRepository('AppBundle:Usage')->findOneBy(['name' => $name]);
+        if($usage) {
+          $usage->setColor($color);
+        }
+      }
+
+      $em->flush();
+
+    }
+
 
     /**
      * @Route("/mitmachen", name="add")

@@ -22,6 +22,13 @@ class Usage
     protected $id;
 
     /**
+     * @var int
+     *
+     * @ORM\ManyToOne(targetEntity="Strassen\AppBundle\Entity\Usage")
+     */
+    protected $parent;
+
+    /**
      * @var string
      *
      * @ORM\Column(name="`name`", type="string")
@@ -97,6 +104,30 @@ class Usage
     public function setId($id)
     {
         $this->id = $id;
+
+        return $this;
+    }
+
+    /**
+     * Get the Usage
+     *
+     * @return Usage
+     */
+    public function getParent()
+    {
+        return $this->parent;
+    }
+
+    /**
+     * Set the Usage
+     *
+     * @param Usage parent
+     *
+     * @return self
+     */
+    public function setParent(Usage $parent = null)
+    {
+        $this->parent = $parent;
 
         return $this;
     }
