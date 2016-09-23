@@ -33,9 +33,16 @@ class MapController extends Controller
             return array(
                 'lat'      => $singleMarker->getLat(),
                 'lng'      => $singleMarker->getLng(),
+                'business' => array(
+                  'name'   => $singleMarker->getLabel(),
+                  'address' => $singleMarker->getAddress(),
+                  'addressInfo' => $singleMarker->getAddressInfo(),
+                ),
                 'usage' => array(
-                    'name'  => PrivacyProtector::obfuscateName($singleMarker->getUsage()->getName()),
-                    'color' => PrivacyProtector::obfuscateColor($singleMarker->getUsage()->getColor()),
+                    'name'  => $singleMarker->getUsage()->getName(),
+                    'color' => $singleMarker->getUsage()->getColor(),
+
+
                 ),
             );
         } , $marker);

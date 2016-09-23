@@ -4,8 +4,8 @@
 
   <head>{% block head %}
         <meta charset="utf-8">
-        <title>{% block title "Straßen von St. Pauli" %}</title>
-        <meta name="description" content="{% block description "Straßen von St. Pauli ist eine Kartierung der Eigentumsverhältnisse in St. Pauli, die durch eine AG von St. Pauli selber machen entwickelt wird." %}">
+        <title>{% block title "BID Reeperbahn+" %}</title>
+        <meta name="description" content="{% block description "Kartierungen zum gewerblichen Strukturwandel am Beispiel Business Improvement District (BID) Reeperbahn+ in Hamburg St. Pauli" %}">
         <meta name="keywords" content="">
         {% block og_tags -%}
         {{ macro.og_tag("title", block("title")) }}
@@ -59,6 +59,7 @@
         <script src="//maps.google.com/maps/api/js?sensor=false"></script>
         <script src="//google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/src/markerclusterer_compiled.js"></script>
         <script src="{{ asset("js/main.js") }}"></script>
+        <script src="{{ asset("js/oms.min.js") }}"></script>
         {% endblock javascripts %}
 
         {% if app.google_analytics.property_id|default(false) -%}

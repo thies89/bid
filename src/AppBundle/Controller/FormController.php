@@ -196,6 +196,29 @@ class FormController extends Controller
       $em->flush();
     }
 
+    public function adjustBrightness($hex, $steps) {
+      // Steps should be between -255 and 255. Negative = darker, positive = lighter
+      $steps = max(-255, min(255, $steps));
+
+      // Normalize into a six character long hex string
+      $hex = str_replace('#', '', $hex);
+      if (strlen($hex) == 3) {
+          $hex = str_repeat(substr($hex,0,1), 2).str_repeat(substr($hex,1,1), 2).str_repeat(substr($hex,2,1), 2);
+      }
+
+      // Split into three parts: R, G and B
+      $color_parts = str_split($hex, 2);
+      $return = '#';
+
+      foreach ($color_parts as $color) {
+          $color   = hexdec($color); // Convert to decimal
+          $color   = max(0,min(255,$color + $steps)); // Adjust color
+          $return .= str_pad(dechex($color), 2, '0', STR_PAD_LEFT); // Make two char hex code
+      }
+
+      return $return;
+    }
+
     /**
      * @Route("/changeColor", name="color")
      */
@@ -214,9 +237,9 @@ class FormController extends Controller
       $unterhaltung = '#32CD32'; //LimeGreen
 
       $colors = [
-        //Bar
-        'Außenbar' => $bar,
+        //Bar adjustBrightness($bar, 255 - rand(0, 510)),
         'Bar' => $bar,
+        'Außenbar' => $bar,
         'Burlesque Bar' => $bar,
         'Irish Pub' => $bar,
         'Kneipe' => $bar,
@@ -224,41 +247,47 @@ class FormController extends Controller
         'Tanzbar' => $bar,
 
         //Dienstleistung
-        'Bank' => $dienstleistung,
         'Dienstleistung' => $dienstleistung,
+        'Bank' => $dienstleistung,
         'Leihhaus' => $dienstleistung,
 
         //Einzelhandel
-        'Apotheke'  => $einzelhandel,
         'Einzelhandel' => $einzelhandel,
+        'Apotheke'  => $einzelhandel,
         'Kiosk' => $einzelhandel,
         'Supermarkt' => $einzelhandel,
 
         //Erotic
+        'Erotic' => $erotic,
         'Bordel' => $erotic,
         'Sexshop' => $erotic, //zu Einzelhandel?
         'Stripklub' => $erotic,
         'Table Dance' => $erotic,
 
         //Gastronomie
+        'Gastronomie' => $gastronomie,
         'Café' => $gastronomie,
         'Fast Food' => $gastronomie,
         'Restaurant' => $gastronomie,
 
         //Gluecksspiel
+        'Gluecksspiel' => $gluecksspiel,
         'Casino' => $gluecksspiel,
         'Spielhalle' => $gluecksspiel,
 
         //Kultur
+        'Kultur' => $kultur,
         'Galerie' => $kultur,
         'Museum' => $kultur,
 
         //Nachtleben
+        'Nachtleben' => $nachtleben,
         'Club' => $nachtleben,
         'Diskothek' => $nachtleben,
         'Lounge' => $nachtleben,
 
         //Sonstiges
+        'Sonstiges' => $sonstiges,
         'Garage' => $sonstiges,
         'Kirche' => $sonstiges,
         'Leerstand' => $sonstiges,
@@ -266,14 +295,15 @@ class FormController extends Controller
         'Wohnungen' => $sonstiges,
 
         //Tourismus
+        'Tourismus' => $tourismus,
         'Hotel' => $tourismus,
         'Reise Center' => $tourismus,
         'Tourishop' => $tourismus, //zu Einzelhandel?
 
         //Unterhaltung
+        'Unterhaltung' => $unterhaltung,
         'Theater' => $unterhaltung, //zu Kultur?
         'Travestie' => $unterhaltung,
-        'Unterhaltung' => $unterhaltung,
         'Veranstaltungsfläche' => $unterhaltung,
 
       ];

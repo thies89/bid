@@ -35,15 +35,15 @@ class StrassenTwigExtension extends \Twig_Extension
 
     public function getLegendItems()
     {
-        $repository = $this->em->getRepository('AppBundle:Category');
+        $repository = $this->em->getRepository('AppBundle:Usage');
 
-        $items = $repository->findBy(array(), array('weight' => 'ASC'));
+        $items = $repository->findBy(array('parent' => null), array('weight' => 'ASC'));
 
-        $items = PrivacyProtector::filterCategories($items);
+        //$items = PrivacyProtector::filterCategories($items);
 
-        $items = array_filter($items, function($item) {
-            return count($item->getMarkers()) > 0;
-        });
+        // $items = array_filter($items, function($item) {
+        //     return count($item->getBusiness()) > 0;
+        // });
 
 
         return $items;
@@ -51,7 +51,7 @@ class StrassenTwigExtension extends \Twig_Extension
 
     public function getGlossaryItems()
     {
-        $repository = $this->em->getRepository('AppBundle:Category');
+        $repository = $this->em->getRepository('AppBundle:Usage');
 
         return $repository->findBy(array(), array('weight' => 'ASC'));
     }
