@@ -5,6 +5,7 @@ namespace Strassen\AppBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 use Strassen\AppBundle\Entity\Business;
 use Strassen\AppBundle\Entity\Usage;
@@ -20,46 +21,34 @@ class FormController extends Controller
      */
     public function createAction(Request $request)
     {
+      /** @var \Doctrine\Common\Persistence\ObjectManager $em */
       $em = $this->getDoctrine()->getManager();
-      $path = $this->getParameter('kernel.root_dir') . '/Resources/fixtures/';
-      $file = new \SplFileObject($path.'import6.csv');
-      $reader = new CsvReader($file);
 
-      $reader->setHeaderRowNumber(0);
 
-      $bar = new Usage();
-      $bar->setName('Bar');
-      $em->persist($bar);
-      $dienstleistung = new Usage();
-      $dienstleistung->setName('Dienstleistung');
-      $em->persist($dienstleistung);
-      $einzelhandel = new Usage();
-      $einzelhandel->setName('Einzelhandel');
-      $em->persist($einzelhandel);
-      $erotic = new Usage();
-      $erotic->setName('Erotic');
-      $em->persist($erotic);
-      $gastronomie = new Usage();
-      $gastronomie->setName('Gastronomie');
-      $em->persist($gastronomie);
-      $gluecksspiel = new Usage();
-      $gluecksspiel->setName('Glücksspiel');
-      $em->persist($gluecksspiel);
-      $kultur = new Usage();
-      $kultur->setName('Kultur');
-      $em->persist($kultur);
-      $nachtleben = new Usage();
-      $nachtleben->setName('Nachtleben');
-      $em->persist($nachtleben);
-      $sonstiges = new Usage();
-      $sonstiges->setName('Sonstiges');
-      $em->persist($sonstiges);
-      $tourismus = new Usage();
-      $tourismus->setName('Tourismus');
-      $em->persist($tourismus);
-      $unterhaltung = new Usage();
-      $unterhaltung->setName('Unterhaltung');
-      $em->persist($unterhaltung);
+      // create parent categories
+      $parentCategories = [
+        'Bar',
+        'Dienstleistung',
+        'Einzelhandel',
+        'Erotic',
+        'Gastronomie',
+        'Glücksspiel',
+        'Kultur',
+        'Nachtleben',
+        'Sonstiges',
+        'Tourismus',
+        'Unterhaltung',
+      ];
+
+      foreach ($parentCategories as $category) {
+        $variableName = mb_strtolower($category);
+        $variableName = str_replace('ü', 'ue', $variableName);
+
+        $$variableName = new Usage;
+        $$variableName->setName($category);
+
+        $em->persist($$variableName);
+      }
 
       $em->flush();
 
@@ -106,7 +95,20 @@ class FormController extends Controller
         'Wohnungen' => $sonstiges,
       ];
 
+
+      // read data from csv
+      $path = $this->getParameter('kernel.root_dir') . '/Resources/fixtures/';
+      $file = new \SplFileObject($path.'import6.csv');
+      $reader = new CsvReader($file);
+
+      $reader->setHeaderRowNumber(0);
+
       foreach ($reader as $row) {
+
+          // prevent empty usage
+          if (null === $row['usage']) {
+            continue;
+          }
 
           // $row will now be an associative array:
           $business = new Business();
@@ -194,6 +196,8 @@ class FormController extends Controller
           $em->persist($business);
       }
       $em->flush();
+
+      return new Response('Imported ' . $reader->count() . ' businesses');
     }
 
     public function adjustBrightness($hex, $steps) {
@@ -319,6 +323,7 @@ class FormController extends Controller
 
       $em->flush();
 
+      return new Response('Updated colors');
     }
 
 
