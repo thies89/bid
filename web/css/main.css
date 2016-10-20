@@ -176,11 +176,21 @@ main[role="main"] {
 
 .legend__filter__title {
     font-size: 14px;
+    margin-top: 0;
 }
+
 
 .legend__categories,
 .legend__attributes {
     visibility: hidden;
+}
+
+.legend__info__title {
+    font-size: 14px;
+}
+
+.legend__info__highlight {
+    font-weight: bold;
 }
 
 .icon {

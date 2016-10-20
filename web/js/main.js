@@ -49,20 +49,20 @@ function filterDataForCategorySelect(data) {
 function removeFilter(filter) {
     if (_.includes(filters, filter)) {
         filters = _.without(filters, filter);
-        updateBusinessPartitions();
+        updateBusinessPartition();
     }
 }
 
 function addFilter(filter) {
     if (!_.includes(filters, filter)) {
         filters.push(filter);
-        updateBusinessPartitions();
+        updateBusinessPartition();
     }
 }
 
 function clearFilters() {
     filters = [];
-    updateBusinessPartitions();
+    updateBusinessPartition();
 }
 
 function getActiveFilters() {
@@ -111,7 +111,41 @@ function hideMarker(business) {
     oms.removeMarker(business.marker);
 }
 
-function updateBusinessPartitions() {
+function updateInfo(businesses) {
+    var
+        $visible  = $('.js-info-visible'),
+        $outdoor  = $('.js-info-visible-with-outdoor'),
+        $seats    = $('.js-info-outdoor-seats'),
+        $bartable = $('.js-info-outdoor-bartable'),
+        $togo     = $('.js-info-visible-togo')
+    ;
+
+    var
+        businessesWithOutdoor = _.filter(businesses, function(business) {
+            return !!business.business.outdoor_area;
+        }),
+        businessesWithToGo = _.filter(businesses, function(business) {
+            return business.business.to_go;
+        })
+    ;
+
+    var
+        seats = _.reduce(businessesWithOutdoor, function(result, business) {
+            return result + business.business.outdoor_area.seats;
+        }, 0),
+        bartablePlaces = _.reduce(businessesWithOutdoor, function(result, business) {
+            return result + business.business.outdoor_area.bartable_places;
+        }, 0)
+    ;
+
+    $visible.text(businesses.length);
+    $outdoor.text(businessesWithOutdoor.length);
+    $seats.text(seats);
+    $bartable.text(bartablePlaces);
+    $togo.text(businessesWithToGo.length);
+}
+
+function updateBusinessPartition() {
     var partition;
     var visible = [], hidden = [];
 
@@ -138,71 +172,8 @@ function updateBusinessPartitions() {
 
     _.forEach(visible, showMarker);
     _.forEach(hidden, hideMarker);
-    // partition = applyFilters(filters.some);
-    // if (filters.some.length) {
-    //     partition = _.partition(businesses, function(business) {
-    //         return _.some(filters.some, function(filter) {
-    //             return filter.match(business);
-    //         });
-    //     });
 
-    //     hidden = partition[1];
-    // } else {
-    //     partition[0] = businesses;
-    // }
-
-
-    // partition = _.partition(partition[0], function(business) {
-    //     return _.every(filters.every, function(filter) {
-    //         return filter.match(business);
-    //     });
-    // });
-
-    // visible = partition[0];
-    // hidden.concat(partition[1]);
-
-    // _.map(visible, function(business) {
-    //     business.marker.setMap(map);
-    // });
-
-    // _.map(hidden, function(business) {
-    //     business.marker.setMap(null);
-    // })
-    // console.log(partition);
-    // console.log(filterPartition);
-    // var partition, filterPartition;
-
-    // var hasUsageFilter = _.some(filters, function(filter) {
-    //     return filter.constructor === UsageFilter;
-    // });
-
-    // if (!hasUsageFilter) {
-
-    //     partition = _.partition(businesses, function(business) {
-
-    //     });
-    // }
-
-    // filterPartitions[0] are filters that have to match
-    // filterPartitions[1] are filters that can match
-    // var filterPartition = _.partition(filters, function(filter) {
-    //     return filter.constructor === InverseCategoryFilter;
-    // });
-
-    // var partition = _.partition(businesses, function(business) {
-    //     return _.every(filterPartition[0], function(filter) {
-    //         return filter.match(business);
-    //     })
-    // })
-
-    // console.log(partition);
-    // console.log(visibleBusinesses);
-    // console.log(hiddenBusinesses);
-    //
-
-    // TODO
-    // hidden: remove marker from oms, remove map from marker
-    // visible: add marker to oms, add map to marker
+    updateInfo(visible);
 }
 
 function handleLegendItemClicked(e) {
@@ -329,6 +300,8 @@ function initialize() {
 
             return business;
         });
+
+        updateInfo(businesses);
     });
 
 
