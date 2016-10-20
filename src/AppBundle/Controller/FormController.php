@@ -24,6 +24,21 @@ class FormController extends Controller
       /** @var \Doctrine\Common\Persistence\ObjectManager $em */
       $em = $this->getDoctrine()->getManager();
 
+      if ($request->query->has('drop')) {
+        $connection = $this->getDoctrine()->getConnection();
+        $platform   = $connection->getDatabasePlatform();
+
+        $connection->executeQuery('SET FOREIGN_KEY_CHECKS = 0;');
+
+        $truncateBusinessSql = $platform->getTruncateTableSQL('business');
+        $truncateOutdoorAreaSql = $platform->getTruncateTableSQL('outdoorarea');
+        $truncateUsageSql = $platform->getTruncateTableSQL('`usage`');
+        $connection->executeUpdate($truncateBusinessSql);
+        $connection->executeUpdate($truncateOutdoorAreaSql);
+        $connection->executeUpdate($truncateUsageSql);
+
+        $connection->executeQuery('SET FOREIGN_KEY_CHECKS = 1;');
+      }
 
       // create parent categories
       $parentCategories = [
@@ -102,11 +117,12 @@ class FormController extends Controller
       $reader = new CsvReader($file);
 
       $reader->setHeaderRowNumber(0);
+      $created = 0;
 
       foreach ($reader as $row) {
 
           // prevent empty usage
-          if (null === $row['usage']) {
+          if (empty($row['usage'])) {
             continue;
           }
 
@@ -187,17 +203,22 @@ class FormController extends Controller
             $outdoorArea->setBarTable($barTable);
             $outdoorArea->setRailings($railings);
             $outdoorArea->setRoof($roof);
-            $em->persist($outdoorArea);
+
+            $business->setOutdoorArea($outdoorArea);
+            // $em->persist($outdoorArea);
           }
 
           $business->setBranded($row['branded'] ? (boolean) $row['branded'] : null);
           $business->setCreatedAt(new \DateTime($row['createdAt']));
 
           $em->persist($business);
+          $created++;
       }
+
       $em->flush();
 
-      return new Response('Imported ' . $reader->count() . ' businesses');
+
+      return new Response('Imported ' . $created . ' businesses');
     }
 
     public function adjustBrightness($hex, $steps) {

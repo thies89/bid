@@ -4,7 +4,6 @@ namespace Strassen\AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
-use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @ORM\Entity
@@ -48,6 +47,16 @@ class OutdoorArea
      * @ORM\Column(type="boolean", nullable=true)
      */
      protected $railings;
+
+     /**
+      * @var Business
+      *
+      * @ORM\OneToOne(
+      *     targetEntity="Business",
+      *     mappedBy="outdoorArea"
+      * )
+      */
+     protected $business;
 
     /**
      * Get the value of Id
@@ -176,6 +185,18 @@ class OutdoorArea
     public function setRailings($railings)
     {
         $this->railings = $railings;
+
+        return $this;
+    }
+
+    public function getBusiness()
+    {
+        return $this->business;
+    }
+
+    public function setBusiness(Business $business)
+    {
+        $this->business = $business;
 
         return $this;
     }

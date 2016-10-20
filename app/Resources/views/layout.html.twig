@@ -21,6 +21,7 @@
         {% block stylesheets -%}
         <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:300,600">
         <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+        <link rel="stylesheet" href="{{ asset("css/select2.min.css") }}">
         <link rel="stylesheet" href="{{ asset("css/main.css") }}">
         {% endblock stylesheets -%}
 
@@ -57,9 +58,11 @@
         <script src="//code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
         <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
         <script src="//maps.google.com/maps/api/js?sensor=false"></script>
-        <script src="//google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/src/markerclusterer_compiled.js"></script>
-        <script src="{{ asset("js/main.js") }}"></script>
+        <script src="{{ asset("js/lodash.min.js") }}"></script>
         <script src="{{ asset("js/oms.min.js") }}"></script>
+        <script src="{{ asset("js/select2.min.js") }}"></script>
+        <script src="{{ asset("js/i18n/de.js") }}"></script>
+        <script src="{{ asset("js/main.js") }}"></script>
         {% endblock javascripts %}
 
         {% if app.google_analytics.property_id|default(false) -%}

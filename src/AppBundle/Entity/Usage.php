@@ -77,7 +77,7 @@ class Usage
 
     public function __construct()
     {
-        $this->markers = new ArrayCollection();
+        $this->business = new ArrayCollection();
         $this->color   = '#000';
         $this->weight  = 0;
     }

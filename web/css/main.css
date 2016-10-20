@@ -139,14 +139,17 @@ main[role="main"] {
 .legend {
     background: #fff;
     border: 1px solid #ccc;
-    bottom: 30px;
+    bottom: 0;
     box-shadow: 0 1.5px 4px rgba(0, 0, 0, 0.24), 0 1.5px 6px rgba(0, 0, 0, 0.12);
-    cursor: move;
+    /*cursor: move;*/
     font-size: 15px;
     list-style: none;
+    margin: 0;
     padding: 1.5em 2em;
     position: absolute;
-    right: 50px;
+    right: 0;
+    top: 50px;
+    width: 250px;
     z-index: 10;
 }
 
@@ -157,6 +160,27 @@ main[role="main"] {
 
 .legend__separator {
     margin: .7em -.5em .5em;
+}
+
+.legend__item .icon {
+    cursor: pointer;
+}
+
+.select2-container {
+    font-size: 12px;
+}
+
+.legend__filter {
+    padding: 12px 0;
+}
+
+.legend__filter__title {
+    font-size: 14px;
+}
+
+.legend__categories,
+.legend__attributes {
+    visibility: hidden;
 }
 
 .icon {

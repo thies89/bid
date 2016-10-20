@@ -10,17 +10,46 @@
                     background-color: {{ legendItem.color }};
                 }
             {% endfor %}
+
+            .icon--inactive {
+                background-color: transparent !important;
+                border: 1px solid grey;
+            }
         </style>
 
         <ul id="legend" class="legend hidden-xs">
             <h3 class="legend__title">Legende</h3>
+
             <hr class="legend__separator">
+
             {% for legendItem in legend %}
-                <li>
-                    <i class="icon icon--{{ legendItem.name|slugify }}"></i>
+                <li class="legend__item">
+                    <i class="icon icon--{{ legendItem.name|slugify }}" data-id="{{ legendItem.id }}"></i>
                     <span>{{ legendItem.name }}</span>
                 </li>
             {% endfor %}
+
+            <hr class="legend__separator">
+
+            <div class="legend__filter">
+                <h4 class="legend__filter__title">Kategorien</h4>
+                <select class="js-category-select legend__categories" data-source="business.usage" multiple="multiple" style="width: 100%"></select>
+            </div>
+
+            <div class="legend__filter">
+                <h4 class="legend__filter__title">Attribute</h4>
+                <select class="js-attribute-select legend__attributes" multiple="multiple" style="width: 100%">
+                    <option value="outdoor_area">mit Außenbereich</option>
+                    <option value="inhabited">bewohnt</option>
+                    <option value="more_industry">weiteres Gewerbe</option>
+                    <option value="branded">pro BID</option>
+                    <option value="to_go">To Go</option>
+                </select>
+            </div>
+
+            <div class="legend__info">
+
+            </div>
         </ul>
     {% endif %}
 {% endblock %}

@@ -97,9 +97,11 @@ class Business
     /**
      * @var OutdoorArea
      *
-     * @ORM\ManyToOne(
+     * @ORM\OneToOne(
      *     targetEntity="OutdoorArea",
      *     inversedBy="business",
+     *     cascade={"persist", "remove"},
+     *     orphanRemoval=true
      * )
      * @ORM\JoinColumn(
      *     name="outdoorarea_id",
@@ -426,6 +428,7 @@ class Business
     public function setOutdoorArea(OutdoorArea $outdoorArea)
     {
         $this->outdoorArea = $outdoorArea;
+        $outdoorArea->setBusiness($this);
 
         return $this;
     }

@@ -1,161 +1,392 @@
-$(function() {
-    $('#add_contact').on('keyup change', function(ev) {
-        var $this = $(this);
+var gm = google.maps;
+var map, oms, iw;
 
-        if ($this.val() !== '') {
-            $('#add_contactUse').closest('.form-group').stop().fadeIn('fast');
-        } else {
-            $('#add_contactUse').closest('.form-group').stop().fadeOut('fast');
-        }
-    });
+var businesses;
+var filters = [];
 
-    $('#add_own').on('change', function(ev) {
-        var $this = $(this);
 
-        if ($this.val() === '5') {
-            $('#add_source').closest('.form-group').stop().fadeIn('fast');
-        } else {
-            $('#add_source').closest('.form-group').stop().fadeOut('fast');
-        }
-    });
-
-    $('#legend').draggable({ containment: 'parent' });
-});
 
 function getMarkerIcon(color) {
+    color = color || '#000';
+
+    var circle = 'M-8,0a8,8 0 1,0 16,0a8,8 0 1,0 -16,0';
+
     return {
-        path       : 'M-8,0a8,8 0 1,0 16,0a8,8 0 1,0 -16,0',
+        path       : circle,
         strokeColor: color,
         fillColor  : color,
         fillOpacity: 1,
-        size       : google.maps.Size(16, 16),
-        origin     : new google.maps.Point(0, 0),
-        anchor     : new google.maps.Point(8, 8)
+        size       : gm.Size(16, 16),
+        origin     : new gm.Point(0, 0),
+        anchor     : new gm.Point(0, 0)
     };
+}
+
+function getInfoWindowContent(business) {
+    // TODO
+    return '<div>' +
+            '<h1>' + business.business.name + '</h1>' +
+        '</div>'
+    ;
+}
+
+function filterDataForCategorySelect(data) {
+    return _(data)
+        .uniqBy(function(business) {
+            return business.usage.id;
+        })
+        .map(function(business) {
+            return {
+                id  : business.usage.id,
+                text: business.usage.name
+            };
+        })
+        .sortBy('text')
+        .value()
+    ;
+}
+
+function removeFilter(filter) {
+    if (_.includes(filters, filter)) {
+        filters = _.without(filters, filter);
+        updateBusinessPartitions();
+    }
+}
+
+function addFilter(filter) {
+    if (!_.includes(filters, filter)) {
+        filters.push(filter);
+        updateBusinessPartitions();
+    }
+}
+
+function clearFilters() {
+    filters = [];
+    updateBusinessPartitions();
+}
+
+function getActiveFilters() {
+    var active = filters;
+    var hasUsageFilter = _.some(filters, function(filter) {
+        return filter.constructor === UsageFilter;
+    });
+
+    if (hasUsageFilter) {
+        active = _.reject(active, function(filter) {
+            return filter.constructor === InverseCategoryFilter;
+        });
+    }
+
+    return active;
+}
+
+function separateSomeAndEveryFilters(filters) {
+    var partition = _.partition(filters, { type: 'some' });
+
+    return {
+        'some' : partition[0],
+        'every': partition[1]
+    };
+
+    return filters;
+}
+
+function applyFilters(businesses, filters) {
+    var type = filters[0].type;
+
+    return _.partition(businesses, function(business) {
+        return _[type](filters, function(filter) {
+            return filter.match(business);
+        });
+    });
+}
+
+function showMarker(business) {
+    business.marker.setMap(map);
+    oms.addMarker(business.marker);
+}
+
+function hideMarker(business) {
+    business.marker.setMap(null);
+    oms.removeMarker(business.marker);
+}
+
+function updateBusinessPartitions() {
+    var partition;
+    var visible = [], hidden = [];
+
+    var filters = separateSomeAndEveryFilters(getActiveFilters());
+
+
+    if (filters.some.length) {
+        partition = applyFilters(businesses, filters.some);
+
+        visible = partition[0];
+        hidden  = partition[1];
+    } else {
+        visible = businesses;
+    }
+
+
+    if (filters.every.length) {
+        partition = applyFilters(visible, filters.every);
+
+        visible = partition[0];
+        hidden  = hidden.concat(partition[1]);
+    }
+
+
+    _.forEach(visible, showMarker);
+    _.forEach(hidden, hideMarker);
+    // partition = applyFilters(filters.some);
+    // if (filters.some.length) {
+    //     partition = _.partition(businesses, function(business) {
+    //         return _.some(filters.some, function(filter) {
+    //             return filter.match(business);
+    //         });
+    //     });
+
+    //     hidden = partition[1];
+    // } else {
+    //     partition[0] = businesses;
+    // }
+
+
+    // partition = _.partition(partition[0], function(business) {
+    //     return _.every(filters.every, function(filter) {
+    //         return filter.match(business);
+    //     });
+    // });
+
+    // visible = partition[0];
+    // hidden.concat(partition[1]);
+
+    // _.map(visible, function(business) {
+    //     business.marker.setMap(map);
+    // });
+
+    // _.map(hidden, function(business) {
+    //     business.marker.setMap(null);
+    // })
+    // console.log(partition);
+    // console.log(filterPartition);
+    // var partition, filterPartition;
+
+    // var hasUsageFilter = _.some(filters, function(filter) {
+    //     return filter.constructor === UsageFilter;
+    // });
+
+    // if (!hasUsageFilter) {
+
+    //     partition = _.partition(businesses, function(business) {
+
+    //     });
+    // }
+
+    // filterPartitions[0] are filters that have to match
+    // filterPartitions[1] are filters that can match
+    // var filterPartition = _.partition(filters, function(filter) {
+    //     return filter.constructor === InverseCategoryFilter;
+    // });
+
+    // var partition = _.partition(businesses, function(business) {
+    //     return _.every(filterPartition[0], function(filter) {
+    //         return filter.match(business);
+    //     })
+    // })
+
+    // console.log(partition);
+    // console.log(visibleBusinesses);
+    // console.log(hiddenBusinesses);
+    //
+
+    // TODO
+    // hidden: remove marker from oms, remove map from marker
+    // visible: add marker to oms, add map to marker
+}
+
+function handleLegendItemClicked(e) {
+    var $el = $(e.currentTarget);
+    var filter;
+
+    if ($el.hasClass('icon--inactive')) {
+        filter = $el.data('filter');
+
+        removeFilter(filter);
+
+        $el.removeData('filter');
+        $el.removeClass('icon--inactive');
+    } else {
+        filter = new InverseCategoryFilter($el.data('id'));
+
+        addFilter(filter);
+
+        $el.addClass('icon--inactive');
+        $el.data('filter', filter);
+    }
+}
+
+function handleCategorySelected(event) {
+    var filter = new UsageFilter(event.params.data.id);
+
+    addFilter(filter);
+}
+
+function handleCategoryUnselected(event) {
+    var filter = _.find(filters, function(filter) {
+        if (filter instanceof UsageFilter) {
+            return filter.id === parseInt(event.params.data.id, 10);
+        }
+
+        return false;
+    });
+
+    removeFilter(filter);
+}
+
+function handleAttributeSelected(event) {
+    var filter = new AttributeFilter(event.params.data.id);
+
+    addFilter(filter);
+}
+
+function handleAttributeUnselected(event) {
+    var filter = _.find(filters, function(filter) {
+        if (filter instanceof AttributeFilter) {
+            return filter.name === event.params.data.id;
+        }
+
+        return false;
+    });
+
+    removeFilter(filter);
 }
 
 
 function initialize() {
-    var mapOptions = {
-        center          : { lat: 53.549535, lng: 9.962462},
-        zoom            : 17,
-        disableDefaultUI: true,
-        styles          : [{"featureType":"administrative","elementType":"labels.text.fill","stylers":[{"color":"#0c0b0b"}]},{"featureType":"landscape","elementType":"all","stylers":[{"color":"#f2f2f2"}]},{"featureType":"poi","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"road","elementType":"all","stylers":[{"saturation":-100},{"lightness":45}]},{"featureType":"road","elementType":"labels.text.fill","stylers":[{"color":"#090909"}]},{"featureType":"road.highway","elementType":"all","stylers":[{"visibility":"simplified"}]},{"featureType":"road.arterial","elementType":"labels.icon","stylers":[{"visibility":"off"}]},{"featureType":"transit","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"water","elementType":"all","stylers":[{"color":"#d4e4eb"},{"visibility":"on"}]},{"featureType":"water","elementType":"geometry.fill","stylers":[{"visibility":"on"},{"color":"#fef7f7"}]},{"featureType":"water","elementType":"labels.text.fill","stylers":[{"color":"#9b7f7f"}]},{"featureType":"water","elementType":"labels.text.stroke","stylers":[{"color":"#fef7f7"}]}]
-    };
-
-    var map = new google.maps.Map(
+    map = new gm.Map(
         document.getElementById('map-canvas'),
-        mapOptions
+        {
+            center          : { lat: 53.549535, lng: 9.962462},
+            zoom            : 17,
+            disableDefaultUI: true,
+            styles          : [ {"featureType":"administrative","elementType":"labels.text.fill","stylers":[{"color":"#0c0b0b"}]},{"featureType":"landscape","elementType":"all","stylers":[{"color":"#f2f2f2"}]},{"featureType":"poi","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"road","elementType":"all","stylers":[{"saturation":-100},{"lightness":45}]},{"featureType":"road","elementType":"labels.text.fill","stylers":[{"color":"#090909"}]},{"featureType":"road.highway","elementType":"all","stylers":[{"visibility":"simplified"}]},{"featureType":"road.arterial","elementType":"labels.icon","stylers":[{"visibility":"off"}]},{"featureType":"transit","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"water","elementType":"all","stylers":[{"color":"#d4e4eb"},{"visibility":"on"}]},{"featureType":"water","elementType":"geometry.fill","stylers":[{"visibility":"on"},{"color":"#fef7f7"}]},{"featureType":"water","elementType":"labels.text.fill","stylers":[{"color":"#9b7f7f"}]},{"featureType":"water","elementType":"labels.text.stroke","stylers":[{"color":"#fef7f7"}]} ]
+        }
     );
 
+
+    // add bid boundaries
     map.data.loadGeoJson('js/bid.geojson');
 
+
+    // oms initialization with listener
+    iw  = new gm.InfoWindow();
+    oms = new OverlappingMarkerSpiderfier(map, {
+        markersWontMove: true,
+        markersWontHide: true
+    });
+
+    oms.addListener('click', function(marker) {
+        iw.setContent(getInfoWindowContent(marker.business));
+        iw.open(map, marker);
+    })
+
+    oms.addListener('spiderfy', function(markers) {
+        iw.close();
+    });
+
+
+    // add legend listener
+    $('.legend__item .icon').on('click', handleLegendItemClicked);
+
+
+    // initial load of all businesses
     $.get(CONFIG.map.markerUrl, function(data) {
-      // console.log(data);
-        var markerss = data.map(function(business) {
-                var icon = getMarkerIcon(business.usage.color);
+        var categorySelect = $('.js-category-select').select2({
+            data: filterDataForCategorySelect(data)
+        });
+        var attributeSelect = $('.js-attribute-select').select2();
 
-                var contentString = '<div id="content">'+
-                  '<h1 id="firstHeading" class="firstHeading">'+business.business.name+'</h1>'+
-                  '<div id="bodyContent">'+
-                  //'<p>'business.usage.parent' : 'business.usage.name '</p>'+
-                  '<p> Adresse: '+business.business.address+' im '+business.business.addressInfo+'</p>'+
-
-                  '</div>'+
-                  '</div>';
-
-                var infowindow = new google.maps.InfoWindow({
-                    content: contentString
-                });
+        categorySelect.on('select2:select', handleCategorySelected);
+        categorySelect.on('select2:unselect', handleCategoryUnselected);
+        attributeSelect.on('select2:select', handleAttributeSelected);
+        attributeSelect.on('select2:unselect', handleAttributeUnselected);
 
 
-                var marker = new google.maps.Marker({
-                    position: new google.maps.LatLng(business.lat, business.lng),
-                    map     : map,
-                    title   : business.business.name,
-                    icon    : icon
-                });
-
-                // var oms = new OverlappingMarkerSpiderfier(map);
-                //
-                // var iw = new google.maps.InfoWindow();
-                //
-                // oms.addListener('click', function(marker) {
-                //   iw.setContent(marker.desc);
-                //   iw.open(map, marker);
-                // });
-                // oms.addListener('spiderfy', function(markers) {
-                //   for(var i = 0; i < markers.length; i ++) {
-                //     markers[i].setIcon(iconWithColor(spiderfiedColor));
-                //     markers[i].setShadow(null);
-                //   }
-                //   iw.close();
-                // });
-                // oms.addListener('unspiderfy', function(markers) {
-                //   for(var i = 0; i < markers.length; i ++) {
-                //     markers[i].setIcon(iconWithColor(usualColor));
-                //     markers[i].setShadow(shadow);
-                //   }
-                // });
-                //
-                // var bounds = new google.maps.LatLngBounds();
-                // for (var i = 0; i < window.mapData.length; i ++) {
-                //
-                //   bounds.extend(loc);
-                //   var marker = new google.maps.Marker({
-                //         position: new google.maps.LatLng(business.lat, business.lng),
-                //         map     : map,
-                //         title   : business.business.name,
-                //         icon    : icon
-                //   });
-                //   marker.desc = datum.d;
-                //   oms.addMarker(marker);
-                // }
-                // map.fitBounds(bounds);
-
-
-                marker.addListener('click', function() {
-                  infowindow.open(map, marker);
-                });
-
-                return marker;
-
+        businesses = data.map(function(business) {
+            var marker = new gm.Marker({
+                position: new gm.LatLng(business.lat, business.lng),
+                map     : map,
+                title   : business.business.name,
+                icon    : getMarkerIcon(business.usage.color)
             });
 
-        //     markerCluster = new MarkerClusterer(map, markers, {
-        //         gridSize: 50,
-        //         maxZoom: 13,
-        //         styles: [
-        //             {
-        //                 height: 53,
-        //                 url: CONFIG.map.clusterImages[0],
-        //                 width: 53
-        //             },
-        //             {
-        //                 height: 56,
-        //                 url: CONFIG.map.clusterImages[1],
-        //                 width: 56
-        //             },
-        //             {
-        //                 height: 66,
-        //                 url: CONFIG.map.clusterImages[2],
-        //                 width: 66
-        //             },
-        //             {
-        //                 height: 78,
-        //                 url: CONFIG.map.clusterImages[3],
-        //                 width: 78
-        //             },
-        //             {
-        //                 height: 90,
-        //                 url: CONFIG.map.clusterImages[4],
-        //                 width: 90
-        //         }]
-        //     })
-        // ;
+            oms.addMarker(marker);
+
+            // bidirectional one-to-one reference
+            marker.business = business;
+            business.marker = marker;
+
+            return business;
+        });
     });
 
 
 }
 
-google.maps.event.addDomListener(window, 'load', initialize);
+
+// filter
+function InverseCategoryFilter(id) {
+    var that = this;
+
+    this.id   = parseInt(id, 10);
+    this.type = 'every';
+
+    this.match = function(business) {
+        if (that.id === business.usage.id) {
+            return false;
+        }
+
+        if (
+            business.usage.parent
+            && that.id === business.usage.parent.id
+        ) {
+            return false;
+        }
+
+        return true;
+    }
+}
+
+function UsageFilter(id) {
+    var that = this;
+
+    this.id   = parseInt(id, 10);
+    this.type = 'some';
+
+    this.match = function(business) {
+        if (that.id === business.usage.id) {
+            return true;
+        }
+
+        return false;
+    }
+}
+
+function AttributeFilter(name) {
+    var that = this;
+
+    this.name = name;
+    this.type = 'every';
+
+    this.match = function(business) {
+        if (_.has(business.business, that.name)) {
+            return !!business.business[that.name];
+        }
+
+        return false;
+    }
+}
+
+
+gm.event.addDomListener(window, 'load', initialize);
