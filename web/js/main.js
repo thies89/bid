@@ -5,6 +5,13 @@ var businesses;
 var filters = [];
 
 
+function getInfoWindowContent(business) {
+    // TODO
+    return '<div>' +
+            '<h1>' + business.business.name + '</h1>' +
+        '</div>'
+    ;
+}
 
 function getMarkerIcon(color) {
     color = color || '#000';
@@ -22,13 +29,6 @@ function getMarkerIcon(color) {
     };
 }
 
-function getInfoWindowContent(business) {
-    // TODO
-    return '<div>' +
-            '<h1>' + business.business.name + '</h1>' +
-        '</div>'
-    ;
-}
 
 function filterDataForCategorySelect(data) {
     return _(data)
@@ -247,7 +247,7 @@ function initialize() {
 
 
     // add bid boundaries
-    map.data.loadGeoJson('js/bid.geojson');
+    map.data.loadGeoJson(GEOJSON);
 
 
     // oms initialization with listener
