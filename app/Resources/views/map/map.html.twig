@@ -23,7 +23,7 @@
           </a>
 
             <hr class="legend__separator">
-          <div class="collapse" id="collapseOne">
+          <div class="collapse in" id="collapseOne">
             {% for legendItem in legend %}
                 <li class="legend__item">
                     <i class="icon icon--{{ legendItem.name|slugify }}" data-id="{{ legendItem.id }}"></i>
@@ -33,6 +33,12 @@
 
             <hr class="legend__separator">
           </div>
+
+            <a role="button" id="myCollapsible" data-toggle="collapse" href="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+              <h3 class="legend__title">Filter <small>+</small></h3>
+            </a>
+            <hr class="legend__separator">
+          <div class="collapse" id="collapseTwo">
             <div class="legend__filter">
                 <h4 class="legend__filter__title">Kategorien</h4>
                 <select class="js-category-select legend__categories" data-source="business.usage" multiple="multiple" style="width: 100%"></select>
@@ -48,9 +54,14 @@
                     <option value="to_go">Drinks to Go</option>
                 </select>
             </div>
-
             <hr class="legend__separator">
+          </div>
 
+          <a role="button" id="myCollapsible" data-toggle="collapse" href="#collapseThree" aria-expanded="true" aria-controls="collapseThree">
+            <h3 class="legend__title">Daten <small>+</small></h3>
+          </a>
+          <hr class="legend__separator">
+          <div class="collapse" id="collapseThree">
             <div class="legend__info">
                 <h4 class="legend__info__title">In Zahlen</h4>
                 <div>
@@ -69,6 +80,7 @@
                     <span class="js-info-visible-togo legend__info__highlight">0</span> Drinks to Go
                 </div>
             </div>
+          </div>
         </ul>
     {% endif %}
 {% endblock %}

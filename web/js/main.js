@@ -9,14 +9,53 @@ function getInfoWindowContent(business) {
     var contentString = '<div>' +
             '<h2>' + business.business.name + '</h2>' +
             '<p><b>Anschrift:</b> ' + business.business.address + ', ' + business.business.addressInfo + '</p>' +
-            '<p><b>Nutzung:</b> ' + business.usage.name + '</p>' +
-            '<p><b>bewohnt:</b> ' + business.business.inhabited + ' <b>weiteres Gewerbe:</b> ' + business.business.more_industry + '</p>' +
-            '<p><b>Bekennung zum BID:</b> ' + business.business.branded + ' <b>Drinks to go:</b> ' + business.business.to_go + '</p>' +
-            '<h3>Außenbereich</h3>' +
-            '<p><b>Sitzplätze:</b> ' + business.business.outdoor_area.seats + ' <b>Stehtische:</b> ' + business.business.outdoor_area.bartable_places + '</p>' +
-            '<p><b>überdacht:</b> ' + business.business.outdoor_area.roof + ' <b>umzäunt:</b> ' + business.business.outdoor_area.railings + '</p>'
-    ;
+            '<p><b>Nutzung:</b> ' + business.usage.name + '</p>'
+            ;
 
+    if (business.business.inhabited || business.business.more_industry || business.business.branded || business.business.to_go) {
+      contentString = contentString +
+      '<h3>Eigenschaften</h3>' +
+      '<ul>'
+      ;
+    }
+
+    if (business.business.inhabited) {
+      contentString = contentString +
+      '<li>bewohnt</li>'
+      ;
+    }
+
+    if (business.business.more_industry) {
+      contentString = contentString +
+      '<li>weiteres Gewerbe</li>'
+      ;
+    }
+
+    if (business.business.branded) {
+      contentString = contentString +
+      '<li>Bekennung zum BID</li>'
+      ;
+    }
+
+    if (business.business.to_go) {
+      contentString = contentString +
+      '<li>Drinks to go</li>'
+      ;
+    }
+
+    if (business.business.inhabited || business.business.more_industry || business.business.branded || business.business.to_go) {
+      contentString = contentString +
+      '</ul>'
+      ;
+    }
+
+    if (business.business.outdoor_area) {
+      contentString = contentString +
+      '<h3>Außenbereich</h3>' +
+      '<p><b>Sitzplätze:</b> ' + business.business.outdoor_area.seats + ' <b>Stehtische:</b> ' + business.business.outdoor_area.bartable_places + '</p>' +
+      '<p><b>überdacht:</b> ' + business.business.outdoor_area.roof + ' <b>umzäunt:</b> ' + business.business.outdoor_area.railings + '</p>'
+      ;
+    }
     if (business.business.comment) {
       contentString = contentString +
       '<h3>Anmerkung:</h3>' +
