@@ -18,10 +18,12 @@
         </style>
 
         <ul id="legend" class="legend hidden-xs">
-            <h3 class="legend__title">Legende</h3>
+          <a role="button" id="myCollapsible" data-toggle="collapse" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+            <h3 class="legend__title">Legende <small>+</small></h3>
+          </a>
 
             <hr class="legend__separator">
-
+          <div class="collapse" id="collapseOne">
             {% for legendItem in legend %}
                 <li class="legend__item">
                     <i class="icon icon--{{ legendItem.name|slugify }}" data-id="{{ legendItem.id }}"></i>
@@ -30,7 +32,7 @@
             {% endfor %}
 
             <hr class="legend__separator">
-
+          </div>
             <div class="legend__filter">
                 <h4 class="legend__filter__title">Kategorien</h4>
                 <select class="js-category-select legend__categories" data-source="business.usage" multiple="multiple" style="width: 100%"></select>
@@ -42,8 +44,8 @@
                     <option value="outdoor_area">mit Außenbereich</option>
                     <option value="inhabited">bewohnt</option>
                     <option value="more_industry">weiteres Gewerbe</option>
-                    <option value="branded">pro BID</option>
-                    <option value="to_go">To Go</option>
+                    <option value="branded">Bekennung zum BID</option>
+                    <option value="to_go">Drinks to Go</option>
                 </select>
             </div>
 
@@ -61,10 +63,10 @@
                     davon <span class="js-info-outdoor-seats legend__info__highlight">0</span> Sitzplätze
                 </div>
                 <div>
-                    und <span class="js-info-outdoor-bartable legend__info__highlight">0</span> Stehplätze
+                    und <span class="js-info-outdoor-bartable legend__info__highlight">0</span> Stehtische
                 </div>
                 <div>
-                    <span class="js-info-visible-togo legend__info__highlight">0</span> ToGo
+                    <span class="js-info-visible-togo legend__info__highlight">0</span> Drinks to Go
                 </div>
             </div>
         </ul>

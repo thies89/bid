@@ -41,6 +41,7 @@ class MapController extends Controller
                   'more_industry' => boolval($marker->getMoreIndustry()),
                   'branded'       => boolval($marker->getBranded()),
                   'to_go'         => boolval($marker->getToGo()),
+                  'comment'       => $marker->getComment(),
                 ),
                 'usage' => array(
                     'id'     => $marker->getUsage()->getId(),

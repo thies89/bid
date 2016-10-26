@@ -6,11 +6,26 @@ var filters = [];
 
 
 function getInfoWindowContent(business) {
-    // TODO
-    return '<div>' +
-            '<h1>' + business.business.name + '</h1>' +
-        '</div>'
+    var contentString = '<div>' +
+            '<h2>' + business.business.name + '</h2>' +
+            '<p><b>Anschrift:</b> ' + business.business.address + ', ' + business.business.addressInfo + '</p>' +
+            '<p><b>Nutzung:</b> ' + business.usage.name + '</p>' +
+            '<p><b>bewohnt:</b> ' + business.business.inhabited + ' <b>weiteres Gewerbe:</b> ' + business.business.more_industry + '</p>' +
+            '<p><b>Bekennung zum BID:</b> ' + business.business.branded + ' <b>Drinks to go:</b> ' + business.business.to_go + '</p>' +
+            '<h3>Außenbereich</h3>' +
+            '<p><b>Sitzplätze:</b> ' + business.business.outdoor_area.seats + ' <b>Stehtische:</b> ' + business.business.outdoor_area.bartable_places + '</p>' +
+            '<p><b>überdacht:</b> ' + business.business.outdoor_area.roof + ' <b>umzäunt:</b> ' + business.business.outdoor_area.railings + '</p>'
     ;
+
+    if (business.business.comment) {
+      contentString = contentString +
+      '<h3>Anmerkung:</h3>' +
+      business.business.comment +
+      '</div>'
+      ;
+    }
+
+    return contentString;
 }
 
 function getMarkerIcon(color) {
@@ -269,6 +284,14 @@ function initialize() {
 
     // add legend listener
     $('.legend__item .icon').on('click', handleLegendItemClicked);
+
+    $('body').on('hide.bs.collapse', function() {
+      $('.legend .legend__title small').text('+');
+    });
+
+    $('body').on('show.bs.collapse', function() {
+      $('.legend .legend__title small').text('-');
+    });
 
 
     // initial load of all businesses

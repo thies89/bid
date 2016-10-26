@@ -56,7 +56,7 @@ class FormController extends Controller
       ];
 
       foreach ($parentCategories as $category) {
-        $variableName = mb_strtolower($category);
+        $variableName = strtolower($category);
         $variableName = str_replace('ü', 'ue', $variableName);
 
         $$variableName = new Usage;
@@ -113,7 +113,7 @@ class FormController extends Controller
 
       // read data from csv
       $path = $this->getParameter('kernel.root_dir') . '/Resources/fixtures/';
-      $file = new \SplFileObject($path.'import6.csv');
+      $file = new \SplFileObject($path.'final-import.csv');
       $reader = new CsvReader($file);
 
       $reader->setHeaderRowNumber(0);
